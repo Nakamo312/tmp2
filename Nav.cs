@@ -1,210 +1,47 @@
-using System;
-using Unity.Properties;
-using UnityEngine;
-using UnityEngine.AI;
-
-namespace Unity.Behavior
 {
-    [Serializable, GeneratePropertyBag]
-    [NodeDescription(
-        name: "Navigate To Target",
-        description: "Navigates a GameObject towards another GameObject using NavMeshAgent." +
-        "\nIf NavMeshAgent is not available on the [Agent] or its children, moves the Agent using its transform.",
-        story: "[Agent] navigates to [Target]",
-        category: "Action/Navigation",
-        id: "3bc19d3122374cc9a985d90351633310")]
-    internal partial class NavigateToTargetAction : Action
-    {
-        public enum TargetPositionMode
-        {
-            ClosestPointOnAnyCollider,      // Use the closest point on any collider, including child objects
-            ClosestPointOnTargetCollider,   // Use the closest point on the target's own collider only
-            ExactTargetPosition             // Use the exact position of the target, ignoring colliders
-        }
-
-        [SerializeReference] public BlackboardVariable<GameObject> Agent;
-        [SerializeReference] public BlackboardVariable<GameObject> Target;
-        [SerializeReference] public BlackboardVariable<float> Speed = new BlackboardVariable<float>(1.0f);
-        [SerializeReference] public BlackboardVariable<float> DistanceThreshold = new BlackboardVariable<float>(0.2f);
-        [SerializeReference] public BlackboardVariable<string> AnimatorSpeedXParam = new BlackboardVariable<string>("x");
-        [SerializeReference] public BlackboardVariable<string> AnimatorSpeedYParam = new BlackboardVariable<string>("y");
-
-        // This will only be used in movement without a navigation agent.
-        [SerializeReference] public BlackboardVariable<float> SlowDownDistance = new BlackboardVariable<float>(1.0f);
-        [Tooltip("Defines how the target position is determined for navigation:" +
-            "\n- ClosestPointOnAnyCollider: Use the closest point on any collider, including child objects" +
-            "\n- ClosestPointOnTargetCollider: Use the closest point on the target's own collider only" +
-            "\n- ExactTargetPosition: Use the exact position of the target, ignoring colliders. Default if no collider is found.")]
-        [SerializeReference] public BlackboardVariable<TargetPositionMode> m_TargetPositionMode = new(TargetPositionMode.ClosestPointOnAnyCollider);
-
-        private NavMeshAgent m_NavMeshAgent;
-        private Animator m_Animator;
-        private Vector3 m_LastTargetPosition;
-        private Vector3 m_ColliderAdjustedTargetPosition;
-        [CreateProperty] private float m_OriginalStoppingDistance = -1f;
-        [CreateProperty] private float m_OriginalSpeed = -1f;
-        private float m_ColliderOffset;
-        private float m_CurrentSpeed;
-
-        protected override Status OnStart()
-        {
-            if (Agent.Value == null || Target.Value == null)
-            {
-                return Status.Failure;
-            }
-
-            return Initialize();
-        }
-
-        protected override Status OnUpdate()
-        {
-            if (Agent.Value == null || Target.Value == null)
-            {
-                return Status.Failure;
-            }
-
-            // Check if the target position has changed.
-            bool boolUpdateTargetPosition = !Mathf.Approximately(m_LastTargetPosition.x, Target.Value.transform.position.x)
-                || !Mathf.Approximately(m_LastTargetPosition.y, Target.Value.transform.position.y)
-                || !Mathf.Approximately(m_LastTargetPosition.z, Target.Value.transform.position.z);
-
-            if (boolUpdateTargetPosition)
-            {
-                m_LastTargetPosition = Target.Value.transform.position;
-                m_ColliderAdjustedTargetPosition = GetPositionColliderAdjusted();
-            }
-
-            float distance = GetDistanceXZ();
-            bool destinationReached = distance <= (DistanceThreshold + m_ColliderOffset);
-
-            if (destinationReached && (m_NavMeshAgent == null || !m_NavMeshAgent.pathPending))
-            {
-                return Status.Success;
-            }
-            else if (m_NavMeshAgent == null) // transform-based movement
-            {
-                m_CurrentSpeed = NavigationUtility.SimpleMoveTowardsLocation(Agent.Value.transform, m_ColliderAdjustedTargetPosition,
-                    Speed, distance, SlowDownDistance);
-            }
-            else if (boolUpdateTargetPosition) // navmesh-based destination update (if needed)
-            {
-                m_NavMeshAgent.SetDestination(m_ColliderAdjustedTargetPosition);
-            }
-
-            UpdateAnimatorSpeed();
-
-            return Status.Running;
-        }
-
-        protected override void OnEnd()
-        {
-            UpdateAnimatorSpeed(0f);
-
-            if (m_NavMeshAgent != null)
-            {
-                if (m_NavMeshAgent.isOnNavMesh)
-                {
-                    m_NavMeshAgent.ResetPath();
-                }
-                m_NavMeshAgent.speed = m_OriginalSpeed;
-                m_NavMeshAgent.stoppingDistance = m_OriginalStoppingDistance;
-            }
-
-            m_NavMeshAgent = null;
-            m_Animator = null;
-        }
-
-        protected override void OnDeserialize()
-        {
-            // If using a navigation mesh, we need to reset default value before Initialize.
-            m_NavMeshAgent = Agent.Value.GetComponentInChildren<NavMeshAgent>();
-            if (m_NavMeshAgent != null)
-            {
-                if (m_OriginalSpeed >= 0f)
-                    m_NavMeshAgent.speed = m_OriginalSpeed;
-                if (m_OriginalStoppingDistance >= 0f)
-                    m_NavMeshAgent.stoppingDistance = m_OriginalStoppingDistance;
-
-                m_NavMeshAgent.Warp(Agent.Value.transform.position);
-            }
-
-            Initialize();
-        }
-
-        private Status Initialize()
-        {
-            m_LastTargetPosition = Target.Value.transform.position;
-            m_ColliderAdjustedTargetPosition = GetPositionColliderAdjusted();
-
-            // Add the extents of the colliders to the stopping distance.
-            m_ColliderOffset = 0.0f;
-            Collider agentCollider = Agent.Value.GetComponentInChildren<Collider>();
-            if (agentCollider != null)
-            {
-                Vector3 colliderExtents = agentCollider.bounds.extents;
-                m_ColliderOffset += Mathf.Max(colliderExtents.x, colliderExtents.z);
-            }
-
-            if (GetDistanceXZ() <= (DistanceThreshold + m_ColliderOffset))
-            {
-                return Status.Success;
-            }
-
-            // If using a navigation mesh, set target position for navigation mesh agent.
-            m_NavMeshAgent = Agent.Value.GetComponentInChildren<NavMeshAgent>();
-            if (m_NavMeshAgent != null)
-            {
-                if (m_NavMeshAgent.isOnNavMesh)
-                {
-                    m_NavMeshAgent.ResetPath();
-                }
-
-                m_OriginalSpeed = m_NavMeshAgent.speed;
-                m_NavMeshAgent.speed = Speed;
-                m_OriginalStoppingDistance = m_NavMeshAgent.stoppingDistance;
-                m_NavMeshAgent.stoppingDistance = DistanceThreshold + m_ColliderOffset;
-                m_NavMeshAgent.SetDestination(m_ColliderAdjustedTargetPosition);
-            }
-
-            m_Animator = Agent.Value.GetComponentInChildren<Animator>();
-            UpdateAnimatorSpeed(0f);
-
-            return Status.Running;
-        }
-
-        private Vector3 GetPositionColliderAdjusted()
-        {
-            switch (m_TargetPositionMode.Value)
-            {
-                case TargetPositionMode.ClosestPointOnAnyCollider:
-                    Collider anyCollider = Target.Value.GetComponentInChildren<Collider>(includeInactive: false);
-                    if (anyCollider == null || anyCollider.enabled == false)
-                        break;
-                    return anyCollider.ClosestPoint(Agent.Value.transform.position);
-                case TargetPositionMode.ClosestPointOnTargetCollider:
-                    Collider targetCollider = Target.Value.GetComponent<Collider>();
-                    if (targetCollider == null || targetCollider.enabled == false)
-                        break;
-                    return targetCollider.ClosestPoint(Agent.Value.transform.position);
-            }
-
-            // Default to target position.
-            return Target.Value.transform.position;
-        }
-
-        private float GetDistanceXZ()
-        {
-            Vector3 agentPosition = new Vector3(Agent.Value.transform.position.x, m_ColliderAdjustedTargetPosition.y, Agent.Value.transform.position.z);
-            return Vector3.Distance(agentPosition, m_ColliderAdjustedTargetPosition);
-        }
-
-        private void UpdateAnimatorSpeed(float explicitSpeed = -1)
-        {
-            var speed = Agent.Value.velocity;
-            speed *= (2f/m_NavMeshAgent.speed);
-
-            NavigationUtility.UpdateAnimatorSpeed(m_Animator, AnimatorSpeedXParam, m_NavMeshAgent, speed.x, explicitSpeed: explicitSpeed);
-            NavigationUtility.UpdateAnimatorSpeed(m_Animator, AnimatorSpeedYParam, m_NavMeshAgent, speed.z, explicitSpeed: explicitSpeed);
-        }
-    }
+  "dependencies": {
+    "com.unity.animation.rigging": "1.4.1",
+    "com.unity.behavior": "1.0.15",
+    "com.unity.collab-proxy": "2.11.3",
+    "com.unity.feature.development": "1.0.2",
+    "com.unity.multiplayer.center": "1.0.1",
+    "com.unity.probuilder": "6.0.9",
+    "com.unity.timeline": "1.8.10",
+    "com.unity.ugui": "2.0.0",
+    "com.unity.visualscripting": "1.9.9",
+    "com.unity.modules.accessibility": "1.0.0",
+    "com.unity.modules.adaptiveperformance": "1.0.0",
+    "com.unity.modules.ai": "1.0.0",
+    "com.unity.modules.androidjni": "1.0.0",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.assetbundle": "1.0.0",
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.cloth": "1.0.0",
+    "com.unity.modules.director": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.physics2d": "1.0.0",
+    "com.unity.modules.screencapture": "1.0.0",
+    "com.unity.modules.terrain": "1.0.0",
+    "com.unity.modules.terrainphysics": "1.0.0",
+    "com.unity.modules.tilemap": "1.0.0",
+    "com.unity.modules.ui": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.umbra": "1.0.0",
+    "com.unity.modules.unityanalytics": "1.0.0",
+    "com.unity.modules.unitywebrequest": "1.0.0",
+    "com.unity.modules.unitywebrequestassetbundle": "1.0.0",
+    "com.unity.modules.unitywebrequestaudio": "1.0.0",
+    "com.unity.modules.unitywebrequesttexture": "1.0.0",
+    "com.unity.modules.unitywebrequestwww": "1.0.0",
+    "com.unity.modules.vectorgraphics": "1.0.0",
+    "com.unity.modules.vehicles": "1.0.0",
+    "com.unity.modules.video": "1.0.0",
+    "com.unity.modules.vr": "1.0.0",
+    "com.unity.modules.wind": "1.0.0",
+    "com.unity.modules.xr": "1.0.0"
+  }
 }
