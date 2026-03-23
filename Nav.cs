@@ -1,472 +1,210 @@
+using System;
+using Unity.Properties;
+using UnityEngine;
+using UnityEngine.AI;
+
+namespace Unity.Behavior
 {
-  "dependencies": {
-    "com.unity.ai.navigation": {
-      "version": "2.0.10",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.ai": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.burst": {
-      "version": "1.8.28",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.mathematics": "1.2.1",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.collab-proxy": {
-      "version": "2.11.3",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.collections": {
-      "version": "2.6.2",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.burst": "1.8.23",
-        "com.unity.mathematics": "1.3.2",
-        "com.unity.test-framework": "1.4.6",
-        "com.unity.nuget.mono-cecil": "1.11.5",
-        "com.unity.test-framework.performance": "3.0.3"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ext.nunit": {
-      "version": "2.0.5",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.ide.rider": {
-      "version": "3.0.39",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ide.visualstudio": {
-      "version": "2.0.26",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.test-framework": "1.1.33"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.inputsystem": {
-      "version": "1.18.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.uielements": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.mathematics": {
-      "version": "1.3.3",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.multiplayer.center": {
-      "version": "1.0.1",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.uielements": "1.0.0"
-      }
-    },
-    "com.unity.nuget.mono-cecil": {
-      "version": "1.11.6",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.render-pipelines.core": {
-      "version": "17.3.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.burst": "1.8.14",
-        "com.unity.mathematics": "1.3.2",
-        "com.unity.ugui": "2.0.0",
-        "com.unity.collections": "2.4.3",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.terrain": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      }
-    },
-    "com.unity.render-pipelines.universal": {
-      "version": "17.3.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.render-pipelines.core": "17.3.0",
-        "com.unity.shadergraph": "17.3.0",
-        "com.unity.render-pipelines.universal-config": "17.0.3"
-      }
-    },
-    "com.unity.render-pipelines.universal-config": {
-      "version": "17.0.3",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.render-pipelines.core": "17.0.3"
-      }
-    },
-    "com.unity.searcher": {
-      "version": "4.9.4",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.shadergraph": {
-      "version": "17.3.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.render-pipelines.core": "17.3.0",
-        "com.unity.searcher": "4.9.3"
-      }
-    },
-    "com.unity.test-framework": {
-      "version": "1.6.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.ext.nunit": "2.0.3",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      }
-    },
-    "com.unity.test-framework.performance": {
-      "version": "3.2.0",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.test-framework": "1.1.33",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.timeline": {
-      "version": "1.8.10",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.audio": "1.0.0",
-        "com.unity.modules.director": "1.0.0",
-        "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.particlesystem": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ugui": {
-      "version": "2.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0"
-      }
-    },
-    "com.unity.visualscripting": {
-      "version": "1.9.9",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.modules.accessibility": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.adaptiveperformance": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.subsystems": "1.0.0"
-      }
-    },
-    "com.unity.modules.ai": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.androidjni": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.animation": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.assetbundle": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.audio": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.cloth": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0"
-      }
-    },
-    "com.unity.modules.director": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.audio": "1.0.0",
-        "com.unity.modules.animation": "1.0.0"
-      }
-    },
-    "com.unity.modules.hierarchycore": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.imageconversion": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.imgui": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.jsonserialize": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.particlesystem": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.physics": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.physics2d": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.screencapture": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.imageconversion": "1.0.0"
-      }
-    },
-    "com.unity.modules.subsystems": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.jsonserialize": "1.0.0"
-      }
-    },
-    "com.unity.modules.terrain": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.terrainphysics": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.terrain": "1.0.0"
-      }
-    },
-    "com.unity.modules.tilemap": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.physics2d": "1.0.0"
-      }
-    },
-    "com.unity.modules.ui": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.uielements": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.hierarchycore": "1.0.0",
-        "com.unity.modules.physics": "1.0.0"
-      }
-    },
-    "com.unity.modules.umbra": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.unityanalytics": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      }
-    },
-    "com.unity.modules.unitywebrequest": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.unitywebrequestassetbundle": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.assetbundle": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0"
-      }
-    },
-    "com.unity.modules.unitywebrequestaudio": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.audio": "1.0.0"
-      }
-    },
-    "com.unity.modules.unitywebrequesttexture": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0"
-      }
-    },
-    "com.unity.modules.unitywebrequestwww": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.unitywebrequestassetbundle": "1.0.0",
-        "com.unity.modules.unitywebrequestaudio": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
-        "com.unity.modules.assetbundle": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0"
-      }
-    },
-    "com.unity.modules.vectorgraphics": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.uielements": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0"
-      }
-    },
-    "com.unity.modules.vehicles": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0"
-      }
-    },
-    "com.unity.modules.video": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.audio": "1.0.0",
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0"
-      }
-    },
-    "com.unity.modules.vr": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.xr": "1.0.0"
-      }
-    },
-    "com.unity.modules.wind": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
-    "com.unity.modules.xr": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.subsystems": "1.0.0"
-      }
+    [Serializable, GeneratePropertyBag]
+    [NodeDescription(
+        name: "Navigate To Target",
+        description: "Navigates a GameObject towards another GameObject using NavMeshAgent." +
+        "\nIf NavMeshAgent is not available on the [Agent] or its children, moves the Agent using its transform.",
+        story: "[Agent] navigates to [Target]",
+        category: "Action/Navigation",
+        id: "3bc19d3122374cc9a985d90351633310")]
+    internal partial class NavigateToTargetAction : Action
+    {
+        public enum TargetPositionMode
+        {
+            ClosestPointOnAnyCollider,      // Use the closest point on any collider, including child objects
+            ClosestPointOnTargetCollider,   // Use the closest point on the target's own collider only
+            ExactTargetPosition             // Use the exact position of the target, ignoring colliders
+        }
+
+        [SerializeReference] public BlackboardVariable<GameObject> Agent;
+        [SerializeReference] public BlackboardVariable<GameObject> Target;
+        [SerializeReference] public BlackboardVariable<float> Speed = new BlackboardVariable<float>(1.0f);
+        [SerializeReference] public BlackboardVariable<float> DistanceThreshold = new BlackboardVariable<float>(0.2f);
+        [SerializeReference] public BlackboardVariable<string> AnimatorSpeedXParam = new BlackboardVariable<string>("x");
+        [SerializeReference] public BlackboardVariable<string> AnimatorSpeedYParam = new BlackboardVariable<string>("y");
+
+        // This will only be used in movement without a navigation agent.
+        [SerializeReference] public BlackboardVariable<float> SlowDownDistance = new BlackboardVariable<float>(1.0f);
+        [Tooltip("Defines how the target position is determined for navigation:" +
+            "\n- ClosestPointOnAnyCollider: Use the closest point on any collider, including child objects" +
+            "\n- ClosestPointOnTargetCollider: Use the closest point on the target's own collider only" +
+            "\n- ExactTargetPosition: Use the exact position of the target, ignoring colliders. Default if no collider is found.")]
+        [SerializeReference] public BlackboardVariable<TargetPositionMode> m_TargetPositionMode = new(TargetPositionMode.ClosestPointOnAnyCollider);
+
+        private NavMeshAgent m_NavMeshAgent;
+        private Animator m_Animator;
+        private Vector3 m_LastTargetPosition;
+        private Vector3 m_ColliderAdjustedTargetPosition;
+        [CreateProperty] private float m_OriginalStoppingDistance = -1f;
+        [CreateProperty] private float m_OriginalSpeed = -1f;
+        private float m_ColliderOffset;
+        private float m_CurrentSpeed;
+
+        protected override Status OnStart()
+        {
+            if (Agent.Value == null || Target.Value == null)
+            {
+                return Status.Failure;
+            }
+
+            return Initialize();
+        }
+
+        protected override Status OnUpdate()
+        {
+            if (Agent.Value == null || Target.Value == null)
+            {
+                return Status.Failure;
+            }
+
+            // Check if the target position has changed.
+            bool boolUpdateTargetPosition = !Mathf.Approximately(m_LastTargetPosition.x, Target.Value.transform.position.x)
+                || !Mathf.Approximately(m_LastTargetPosition.y, Target.Value.transform.position.y)
+                || !Mathf.Approximately(m_LastTargetPosition.z, Target.Value.transform.position.z);
+
+            if (boolUpdateTargetPosition)
+            {
+                m_LastTargetPosition = Target.Value.transform.position;
+                m_ColliderAdjustedTargetPosition = GetPositionColliderAdjusted();
+            }
+
+            float distance = GetDistanceXZ();
+            bool destinationReached = distance <= (DistanceThreshold + m_ColliderOffset);
+
+            if (destinationReached && (m_NavMeshAgent == null || !m_NavMeshAgent.pathPending))
+            {
+                return Status.Success;
+            }
+            else if (m_NavMeshAgent == null) // transform-based movement
+            {
+                m_CurrentSpeed = NavigationUtility.SimpleMoveTowardsLocation(Agent.Value.transform, m_ColliderAdjustedTargetPosition,
+                    Speed, distance, SlowDownDistance);
+            }
+            else if (boolUpdateTargetPosition) // navmesh-based destination update (if needed)
+            {
+                m_NavMeshAgent.SetDestination(m_ColliderAdjustedTargetPosition);
+            }
+
+            UpdateAnimatorSpeed();
+
+            return Status.Running;
+        }
+
+        protected override void OnEnd()
+        {
+            UpdateAnimatorSpeed(0f);
+
+            if (m_NavMeshAgent != null)
+            {
+                if (m_NavMeshAgent.isOnNavMesh)
+                {
+                    m_NavMeshAgent.ResetPath();
+                }
+                m_NavMeshAgent.speed = m_OriginalSpeed;
+                m_NavMeshAgent.stoppingDistance = m_OriginalStoppingDistance;
+            }
+
+            m_NavMeshAgent = null;
+            m_Animator = null;
+        }
+
+        protected override void OnDeserialize()
+        {
+            // If using a navigation mesh, we need to reset default value before Initialize.
+            m_NavMeshAgent = Agent.Value.GetComponentInChildren<NavMeshAgent>();
+            if (m_NavMeshAgent != null)
+            {
+                if (m_OriginalSpeed >= 0f)
+                    m_NavMeshAgent.speed = m_OriginalSpeed;
+                if (m_OriginalStoppingDistance >= 0f)
+                    m_NavMeshAgent.stoppingDistance = m_OriginalStoppingDistance;
+
+                m_NavMeshAgent.Warp(Agent.Value.transform.position);
+            }
+
+            Initialize();
+        }
+
+        private Status Initialize()
+        {
+            m_LastTargetPosition = Target.Value.transform.position;
+            m_ColliderAdjustedTargetPosition = GetPositionColliderAdjusted();
+
+            // Add the extents of the colliders to the stopping distance.
+            m_ColliderOffset = 0.0f;
+            Collider agentCollider = Agent.Value.GetComponentInChildren<Collider>();
+            if (agentCollider != null)
+            {
+                Vector3 colliderExtents = agentCollider.bounds.extents;
+                m_ColliderOffset += Mathf.Max(colliderExtents.x, colliderExtents.z);
+            }
+
+            if (GetDistanceXZ() <= (DistanceThreshold + m_ColliderOffset))
+            {
+                return Status.Success;
+            }
+
+            // If using a navigation mesh, set target position for navigation mesh agent.
+            m_NavMeshAgent = Agent.Value.GetComponentInChildren<NavMeshAgent>();
+            if (m_NavMeshAgent != null)
+            {
+                if (m_NavMeshAgent.isOnNavMesh)
+                {
+                    m_NavMeshAgent.ResetPath();
+                }
+
+                m_OriginalSpeed = m_NavMeshAgent.speed;
+                m_NavMeshAgent.speed = Speed;
+                m_OriginalStoppingDistance = m_NavMeshAgent.stoppingDistance;
+                m_NavMeshAgent.stoppingDistance = DistanceThreshold + m_ColliderOffset;
+                m_NavMeshAgent.SetDestination(m_ColliderAdjustedTargetPosition);
+            }
+
+            m_Animator = Agent.Value.GetComponentInChildren<Animator>();
+            UpdateAnimatorSpeed(0f);
+
+            return Status.Running;
+        }
+
+        private Vector3 GetPositionColliderAdjusted()
+        {
+            switch (m_TargetPositionMode.Value)
+            {
+                case TargetPositionMode.ClosestPointOnAnyCollider:
+                    Collider anyCollider = Target.Value.GetComponentInChildren<Collider>(includeInactive: false);
+                    if (anyCollider == null || anyCollider.enabled == false)
+                        break;
+                    return anyCollider.ClosestPoint(Agent.Value.transform.position);
+                case TargetPositionMode.ClosestPointOnTargetCollider:
+                    Collider targetCollider = Target.Value.GetComponent<Collider>();
+                    if (targetCollider == null || targetCollider.enabled == false)
+                        break;
+                    return targetCollider.ClosestPoint(Agent.Value.transform.position);
+            }
+
+            // Default to target position.
+            return Target.Value.transform.position;
+        }
+
+        private float GetDistanceXZ()
+        {
+            Vector3 agentPosition = new Vector3(Agent.Value.transform.position.x, m_ColliderAdjustedTargetPosition.y, Agent.Value.transform.position.z);
+            return Vector3.Distance(agentPosition, m_ColliderAdjustedTargetPosition);
+        }
+
+        private void UpdateAnimatorSpeed(float explicitSpeed = -1)
+        {
+            var speed = m_NavMeshAgent.velocity;
+            speed *= (2f/m_NavMeshAgent.speed);
+
+            NavigationUtility.UpdateAnimatorSpeed(m_Animator, AnimatorSpeedXParam, m_NavMeshAgent, speed.x, explicitSpeed: explicitSpeed);
+            NavigationUtility.UpdateAnimatorSpeed(m_Animator, AnimatorSpeedYParam, m_NavMeshAgent, speed.z, explicitSpeed: explicitSpeed);
+        }
     }
-  }
 }
